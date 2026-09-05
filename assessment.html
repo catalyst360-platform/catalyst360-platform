@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalyst 360™ - Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .logo span {
+            color: #764ba2;
+        }
+        
+        .trainer-info {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .progress-bar {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .progress-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-bar-inner {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+        
+        .assessment-card {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question-number {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+        
+        .question-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option:hover {
+            background: #f9f9f9;
+            border-color: #667eea;
+        }
+        
+        .option input[type="radio"] {
+            margin-right: 12px;
+            cursor: pointer;
+        }
+        
+        .option.selected {
+            background: #f0f4ff;
+            border-color: #667eea;
+        }
+        
+        .option label {
+            flex: 1;
+            cursor: pointer;
+            margin: 0;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: space-between;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .completion-message {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        
+        .completion-message.show {
+            display: block;
+        }
+        
+        .completion-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .completion-message h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .completion-message p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .score-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 8px;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-content">
+            <div class="logo">Catalyst <span>360™</span></div>
+            <div class="trainer-info">
+                Trainer ID: <strong id="trainerId"></strong>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="progress-bar">
+            <div class="progress-label">Progress: <span id="progressText">0</span>%</div>
+            <div class="progress-fill">
+                <div class="progress-bar-inner" id="progressBar" style="width: 0%"></div>
+            </div>
+        </div>
+        
+        <div id="assessmentContainer">
+            <!-- Questions will be loaded here -->
+        </div>
+        
+        <div class="completion-message" id="completionMessage">
+            <div class="completion-icon">✓</div>
+            <h2>Assessment Complete!</h2>
+            <p>Thank you for completing the Catalyst 360™ assessment.</p>
+            <div class="score-badge" id="scoreBadge">Score: --</div>
+            <p id="scoreMessage"></p>
+        </div>
+        
+        <div class="btn-group" id="buttonGroup" style="display: none;">
+            <button class="btn btn-secondary" onclick="previousQuestion()" id="prevBtn">← Previous</button>
+            <button class="btn btn-primary" onclick="nextQuestion()" id="nextBtn">Next →</button>
+        </div>
+    </div>
+    
+    <script>
+        // Sample questions
+        const questions = [
+            {
+                id: 1,
+                question: "What is your primary experience in industry-relevant skill development?",
+                options: [
+                    "1-2 years of focused training experience",
+                    "3-5 years with structured curriculum design",
+                    "5-10 years with leadership in educational programs",
+                    "10+ years with proven track record of transforming institutions"
+                ]
+            },
+            {
+                id: 2,
+                question: "How do you approach aligning curriculum with industry requirements?",
+                options: [
+                    "Periodic review of industry trends",
+                    "Quarterly collaboration with industry partners",
+                    "Continuous integration of real-time market feedback",
+                    "Strategic partnerships with top companies for curriculum co-creation"
+                ]
+            },
+            {
+                id: 3,
+                question: "Describe your experience in mentoring and developing faculty/trainers:",
+                options: [
+                    "Limited experience with informal mentoring",
+                    "Structured mentoring programs for small groups",
+                    "Comprehensive faculty development initiatives",
+                    "Established center of excellence for trainer transformation"
+                ]
+            },
+            {
+                id: 4,
+                question: "How do you measure the effectiveness of your training programs?",
+                options: [
+                    "Student feedback and completion rates",
+                    "Pre/post-training assessments",
+                    "Placement rates and employer feedback",
+                    "AI-driven analytics with predictive outcomes and KPI alignment"
+                ]
+            },
+            {
+                id: 5,
+                question: "What is your vision for industry-academia partnerships?",
+                options: [
+                    "One-way knowledge transfer from industry to academia",
+                    "Bilateral collaboration on specific projects",
+                    "Multi-stakeholder ecosystem with shared innovation",
+                    "Catalyst 360™ integrated transformation across all institutional dimensions"
+                ]
+            }
+        ];
+        
+        let currentQuestion = 0;
+        const answers = {};
+        
+        function getTrainerIdFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('trainerId') || 'TEST001';
+        }
+        
+        function loadQuestions() {
+            document.getElementById('trainerId').textContent = getTrainerIdFromURL();
+            renderQuestion();
+            document.getElementById('buttonGroup').style.display = 'flex';
+        }
+        
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            const html = `
+                <div class="assessment-card">
+                    <div class="question-number">Question ${currentQuestion + 1} of ${questions.length}</div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options">
+                        ${q.options.map((opt, idx) => `
+                            <label class="option ${answers[q.id] === opt ? 'selected' : ''}">
+                                <input type="radio" name="question_${q.id}" value="${opt}" 
+                                       ${answers[q.id] === opt ? 'checked' : ''} 
+                                       onchange="selectAnswer(${q.id}, '${opt.replace(/'/g, "\\'")}')">
+                                <label>${opt}</label>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('assessmentContainer').innerHTML = html;
+            
+            // Update progress
+            const progress = Math.round((currentQuestion + 1) / questions.length * 100);
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = progress;
+            
+            // Update buttons
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').textContent = currentQuestion === questions.length - 1 ? 'Submit →' : 'Next →';
+        }
+        
+        function selectAnswer(questionId, answer) {
+            answers[questionId] = answer;
+        }
+        
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        }
+        
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+            } else {
+                submitAssessment();
+            }
+        }
+        
+        function submitAssessment() {
+            // Calculate score
+            const scoreMap = {
+                0: 25,
+                1: 50,
+                2: 75,
+                3: 100
+            };
+            
+            let totalScore = 0;
+            questions.forEach(q => {
+                const answer = answers[q.id];
+                const optionIndex = q.options.indexOf(answer);
+                totalScore += scoreMap[optionIndex] || 0;
+            });
+            
+            const avgScore = Math.round(totalScore / questions.length);
+            
+            // Show completion message
+            document.getElementById('assessmentContainer').style.display = 'none';
+            document.getElementById('buttonGroup').style.display = 'none';
+            document.getElementById('completionMessage').classList.add('show');
+            document.getElementById('scoreBadge').textContent = `Score: ${avgScore}/100`;
+            
+            let message = '';
+            if (avgScore >= 80) {
+                message = '🎉 Excellent! You are highly qualified for Catalyst 360™ partnership.';
+            } else if (avgScore >= 60) {
+                message = '✓ Good! You meet the baseline requirements. We look forward to engaging with you.';
+            } else {
+                message = 'Thank you for your interest. We recommend skill enhancement in industry-academia alignment.';
+            }
+            
+            document.getElementById('scoreMessage').textContent = message;
+        }
+        
+        // Load on page load
+        window.addEventListener('load', loadQuestions);
+    </script>
+</body>
+</html>
