@@ -1,11 +1,19 @@
-catalyst360-platform/
-├── app/                    # Next.js app directory
-│   ├── layout.tsx         # Root layout
-│   ├── page.tsx           # Home page
-│   ├── globals.css        # Global styles
-│   ├── register/
-│   ├── assessment/
-│   └── results/
-├── components/            # React components
-├── lib/                   # Utilities (scoring, storage)
-└── public/               # Static assets
+import type { Metadata } from "next";
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "Catalyst 360",
+  description: "Institution Readiness Assessment Platform",
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
