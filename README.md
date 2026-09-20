@@ -1,4 +1,4 @@
-# Read Catalyst™ - Institutional Readiness Assessment Platform
+# Read Catalyst™ - Transforming Institutions into Industry-Ready Ecosystems
 
 Transforming institutions Through the Lens of Industry.
 
